@@ -14,7 +14,7 @@ module SageOne
     #   help with debugging.
     def connection
       options = {
-        headers =>  {
+        :headers =>  {
           'Accept'        => "application/json; charset=utf-8",
           'User-Agent'    => user_agent,
           'Content-Type'  => 'application/json' },
