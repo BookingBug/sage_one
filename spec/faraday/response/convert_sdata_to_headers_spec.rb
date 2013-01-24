@@ -3,7 +3,7 @@ require 'spec_helper'
 describe FaradayMiddleware::ConvertSdataToHeaders do
 
   def connection(include_mashify=true)
-    Faraday.new(url: sage_url(nil)) do |conn|
+    Faraday.new(:url => sage_url(nil)) do |conn|
       conn.request :json
       conn.use FaradayMiddleware::Mashify if include_mashify
       conn.use FaradayMiddleware::ConvertSdataToHeaders
@@ -14,13 +14,13 @@ describe FaradayMiddleware::ConvertSdataToHeaders do
 
   context "when on the first page"do
     it "does not add a prev link" do
-      stub_get('sales_invoices').to_return(body: sdata_fixture('sales_invoices.json', 20, 0, 20))
+      stub_get('sales_invoices').to_return(:body => sdata_fixture('sales_invoices.json', 20, 0, 20))
       response = connection.get('sales_invoices')
       expect(response.headers).to be_empty
     end
     context "and there are more results than items_per_page" do
       it "adds a next link" do
-        stub_get('sales_invoices').to_return(body: sdata_fixture('sales_invoices.json', 40, 0, 20))
+        stub_get('sales_invoices').to_return(:body => sdata_fixture('sales_invoices.json', 40, 0, 20))
         response = connection.get('sales_invoices')
         expect(response.headers['X-Sdata-Pagination-Links']).to_not be_nil
         expect(response.headers['X-Sdata-Pagination-Links']).to include(%Q{<#{sage_url('sales_invoices?%24startIndex=20')}>; rel="next"})
@@ -29,7 +29,7 @@ describe FaradayMiddleware::ConvertSdataToHeaders do
   end
 
   context "when on the last page" do
-    before { stub_get('sales_invoices').to_return(body: sdata_fixture('sales_invoices.json', 40, 20, 20)) }
+    before { stub_get('sales_invoices').to_return(:body => sdata_fixture('sales_invoices.json', 40, 20, 20)) }
     it "does not add a next link" do
       response = connection.get('sales_invoices')
       expect(response.headers).to_not include('rel="next"')
@@ -40,7 +40,7 @@ describe FaradayMiddleware::ConvertSdataToHeaders do
       expect(response.headers['X-Sdata-Pagination-Links']).to include(%Q{<#{sage_url('sales_invoices?%24startIndex=0')}>; rel="prev"})
     end
     context "when requesting a value in the middle of the last page" do
-      before { stub_get('sales_invoices').to_return(body: sdata_fixture('sales_invoices.json', 40, 30, 20)) }
+      before { stub_get('sales_invoices').to_return(:body => sdata_fixture('sales_invoices.json', 40, 30, 20)) }
       it "does not add a next link" do
         response = connection.get('sales_invoices')
         expect(response.headers).to_not include('rel="next"')
@@ -54,7 +54,7 @@ describe FaradayMiddleware::ConvertSdataToHeaders do
   end
 
   context "when there are fewer results than items_per_page" do
-    before { stub_get('sales_invoices').to_return(body: sdata_fixture('sales_invoices.json', 5, 0, 20)) }
+    before { stub_get('sales_invoices').to_return(:body => sdata_fixture('sales_invoices.json', 5, 0, 20)) }
     it "adds no links" do
       response = connection.get('sales_invoices')
       expect(response.headers['X-Sdata-Pagination-Links']).to be_nil
@@ -62,7 +62,7 @@ describe FaradayMiddleware::ConvertSdataToHeaders do
   end
 
   context "when on a middle page" do
-    before { stub_get('sales_invoices').to_return(body: sdata_fixture('sales_invoices.json', 20, 10, 5)) }
+    before { stub_get('sales_invoices').to_return(:body => sdata_fixture('sales_invoices.json', 20, 10, 5)) }
     it "adds a prev link" do
       response = connection.get('sales_invoices')
       expect(response.headers['X-Sdata-Pagination-Links']).to include(%Q{<#{sage_url('sales_invoices?%24startIndex=5')}>; rel="prev"})
@@ -74,13 +74,13 @@ describe FaradayMiddleware::ConvertSdataToHeaders do
   end
 
   it "places the resources in the body of the response" do
-    stub_get('sales_invoices').to_return(body: sdata_fixture('sales_invoices.json', 20, 10, 5))
+    stub_get('sales_invoices').to_return(:body => sdata_fixture('sales_invoices.json', 20, 10, 5))
     response = connection(false).get('sales_invoices')
     response.body.to_s.should eq(JSON.parse(sdata_fixture('sales_invoices.json', 20,10,5))['$resources'].to_s)
   end
 
   context "when there are existing query parameters" do
-    before { stub_get('sales_invoices?search=salad&from_date=2012-11-11').to_return(body: sdata_fixture('sales_invoices.json', 20, 10, 5)) }
+    before { stub_get('sales_invoices?search=salad&from_date=2012-11-11').to_return(:body => sdata_fixture('sales_invoices.json', 20, 10, 5)) }
     it "it passes them through without modification" do
       response = connection.get('sales_invoices?from_date=2012-11-11&search=salad')
       expect(response.headers['X-Sdata-Pagination-Links']).to eq('<https://app.sageone.com/api/v1/sales_invoices?%24startIndex=15&from_date=2012-11-11&search=salad>; rel="next", <https://app.sageone.com/api/v1/sales_invoices?%24startIndex=5&from_date=2012-11-11&search=salad>; rel="prev"')
@@ -88,7 +88,7 @@ describe FaradayMiddleware::ConvertSdataToHeaders do
   end
 
   context 'when there is no SData' do
-    before { stub_get('sales_invoices/954380').to_return(body: fixture('sales_invoice.json')) }
+    before { stub_get('sales_invoices/954380').to_return(:body => fixture('sales_invoice.json')) }
     it "does not create link headers" do
       response = connection.get('sales_invoices/954380')
       expect(response.headers['X-Sdata-Pagination-Links']).to be_nil
@@ -100,7 +100,7 @@ describe FaradayMiddleware::ConvertSdataToHeaders do
   end
 
   context 'within first page of results, but not from start_index of 0' do
-    before { stub_get('sales_invoices').to_return(body: sdata_fixture('sales_invoices.json', 20, 3, 5)) }
+    before { stub_get('sales_invoices').to_return(:body => sdata_fixture('sales_invoices.json', 20, 3, 5)) }
     it "Adds a previous link to start_index=0" do
       response = connection.get('sales_invoices')
       expect(response.headers['X-Sdata-Pagination-Links']).to include(%Q{<#{sage_url('sales_invoices?%24startIndex=0')}>; rel="prev"})

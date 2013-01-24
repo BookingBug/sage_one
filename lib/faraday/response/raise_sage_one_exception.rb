@@ -32,10 +32,10 @@ module FaradayMiddleware
 
     def error_message(response)
       JSON.unparse({
-        method: response[:method],
-        url:    response[:url].to_s,
-        status: response[:status],
-        body:   (response[:body].nil? ? "" : response[:body])
+        :method =>  response[:method],
+        :url    =>  response[:url].to_s,
+        :status =>  response[:status],
+        :body   =>  (response[:body].nil? ? "" : response[:body])
       })
     end
   end

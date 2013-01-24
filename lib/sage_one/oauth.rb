@@ -20,9 +20,9 @@ module SageOne
     #   SageOne.authorize_url('https://example.com/auth/sageone/callback')
     def authorize_url(callback_url)
       params = {
-        client_id:      client_id,
-        redirect_uri:   callback_url,
-        response_type: 'code'
+        :client_id     =>    client_id,
+        :redirect_uri  =>    callback_url,
+        :response_type =>    'code'
       }
       connection.build_url("/oauth/authorize/", params).to_s
     end
@@ -37,11 +37,11 @@ module SageOne
     #   SageOne.get_access_token(params[:code], 'https://example.com/auth/sageone/callback')
     def get_access_token(code, callback_url)
       params = {
-        client_id:      client_id,
-        client_secret:  client_secret,
-        grant_type:     'authorization_code',
-        code:           code,
-        redirect_uri:   callback_url
+        :client_id     =>    client_id,
+        :client_secret =>    client_secret,
+        :grant_type    =>    'authorization_code',
+        :code          =>    code,
+        :redirect_uri  =>    callback_url
       }
       post("/oauth/token/", params)
     end

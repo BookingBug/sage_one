@@ -42,7 +42,7 @@ module SageOne
       #       line_items_attributes: { unit_price: 12.34, quantity: 1.0, description: "Salmon steak", tax_code_id: 1, ledger_account_id: 987 }
       #     })
       def create_sales_invoice(options)
-        post('sales_invoices', sales_invoice: options)
+        post('sales_invoices', :sales_invoice => options)
       end
 
       # Retrieve a sales invoice
@@ -60,7 +60,7 @@ module SageOne
       # @option (see #create_sales_invoice)
       # @return [Invoice] A Hashie of the updated invoice
       def update_sales_invoice(id, options)
-        put("sales_invoices/#{id}", sales_invoice: options)
+        put("sales_invoices/#{id}", :sales_invoice => options)
       end
 
       # Delete a sales invoice

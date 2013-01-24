@@ -14,12 +14,13 @@ module SageOne
     #   help with debugging.
     def connection
       options = {
-        headers:  { 'Accept'        => "application/json; charset=utf-8",
-                    'User-Agent'    => user_agent,
-                    'Content-Type'  => 'application/json' },
-        proxy:    proxy,
-        ssl:      { verify: false },
-        url:      api_endpoint
+        headers =>  {
+          'Accept'        => "application/json; charset=utf-8",
+          'User-Agent'    => user_agent,
+          'Content-Type'  => 'application/json' },
+        :proxy  =>  proxy,
+        :ssl    =>  { :verify => false },
+        :url    =>  api_endpoint
       }
 
       Faraday.new(options) do |conn|
