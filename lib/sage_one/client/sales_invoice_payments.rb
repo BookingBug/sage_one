@@ -7,7 +7,7 @@ module SageOne
       end
 
       def create_sales_invoice_payment(sales_invoice_id, options)
-        post('sales_invoices/#{sales_invoice_id}/payments', :payment => options)
+        post("sales_invoices/#{sales_invoice_id}/payments", :payment => options)
       end
 
       def sales_invoice_payment(sales_invoice_id, id)
