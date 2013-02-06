@@ -9,6 +9,7 @@ require 'sage_one/client/ledger_accounts'
 require 'sage_one/client/tax_rates'
 require 'sage_one/client/countries'
 require 'sage_one/client/sales_invoice_payments'
+require 'sage_one/client/bank_accounts'
 
 module SageOne
   class Client
@@ -37,5 +38,6 @@ module SageOne
     include SageOne::Client::TaxRates
     include SageOne::Client::Countries
     include SageOne::Client::SalesInvoicePayments
+    include SageOne::Client::BankAccounts
   end
 end
