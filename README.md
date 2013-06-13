@@ -1,8 +1,4 @@
-# Sage One [![Build Status](https://secure.travis-ci.org/customersure/sage_one.png?branch=master)][travis] [![Dependency Status](https://gemnasium.com/customersure/sage_one.png)][gemnasium]
 Faraday-based Ruby wrapper for the Sage One API
-
-[travis]: http://travis-ci.org/customersure/sage_one
-[gemnasium]: https://gemnasium.com/customersure/sage_one
 
 ## Installation
 Add `sage_one` gem to your `Gemfile`
